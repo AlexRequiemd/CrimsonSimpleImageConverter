@@ -1,0 +1,78 @@
+{
+    "text_01": "Input",
+    "text_02": "File(s) Loaded.",
+    "text_03": "Add Files",
+    "text_04": "Add Folder",
+    "text_05": "Clear Input",
+    "text_06": "Convert",
+    "text_07": "Close",
+
+    "text_08": "Output",
+    "text_09": "Output",
+    "text_10": "Format",
+    "text_11": "Options",
+    "text_12": "Source Folder",
+    "text_13": "Folder:",
+    "text_14": "Select Output Directory...",
+    "text_15": "If the output file already exists:",
+    "text_16": "After Conversion:",
+    "text_17": ["Ask", "Replace", "Ignore", "Rename"],
+
+    "text_18": "Delete original",
+    "text_19": "Open output folder",
+    "text_20": "Clear input files",
+    "text_21": "Beep at the end of the process",
+    "text_22": "Close after conversion",
+
+    "text_23": "Log",
+    "text_24": "Log",
+
+    "text_25": "Settings",
+    "text_26": "Language",
+    "text_27": "Theme",
+    "text_28": ["Light", "Dark"],
+
+    "text_29": "About",
+    "text_30": "Crimson Simple Image Converter",
+
+    "text_31": "Enter a new name for the file",
+    "text_32": "Please enter a valid name!",
+    "text_33": "Ex: Image",
+
+    "text_34": "File already exists!",
+    "text_35": "Replace",
+    "text_36": "Rename",
+    "text_37": "Ignore",
+    "text_38": ["* Replace: Overwrites the original file with the current one.", "\n\n", "* Rename: Saves the file with a new name.", "\n\n", "* Ignore: Ignore this file from the Conversion List."],
+
+    "text_39": "File Name",
+    "text_40": "Document Type",
+    "text_41": "Image Size",
+    "text_42": "File Size",
+    "text_43": "Creation Date",
+    "text_44": "Modification Date",
+
+    "text_45": "Unknown",
+    "text_46": "File Name",
+    "text_47": "Document Type",
+    "text_48": "Creator",
+    "text_49": "Producer",
+    "text_50": "Creation Date",
+    "text_51": "Modification Date",
+    "text_52": "Number of Pages",
+    "text_53": "Page Size",
+    "text_54": "File Size",
+    "text_55": "PDF Version",
+
+    "text_56": "Invalid or Unknown Date",
+
+    "text_57": "Converted",
+    "text_58": "Extracted and Converted from",
+    "text_59": "to",
+    "text_60": "Starting Conversion Process...",
+    "text_61": "No image found in:",
+    "text_62": "Process Finished!",
+    "text_63": "Ignored",
+    "text_64": "in the Conversion List",
+    "text_65": "For the changes to take effect, it will be necessary to close the program!"
+}

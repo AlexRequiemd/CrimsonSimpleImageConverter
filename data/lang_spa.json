@@ -1,0 +1,78 @@
+{
+    "text_01": "Entrada",
+    "text_02": "Archivo(s) Cargado(s).",
+    "text_03": "Agregar Archivos",
+    "text_04": "Agregar Carpeta",
+    "text_05": "Limpiar Entrada",
+    "text_06": "Convertir",
+    "text_07": "Cerrar",
+
+    "text_08": "Salida",
+    "text_09": "Salida",
+    "text_10": "Formato",
+    "text_11": "Opciones",
+    "text_12": "Carpeta de Origen",
+    "text_13": "Carpeta:",
+    "text_14": "Seleccione el Directorio de Salida...",
+    "text_15": "Si el archivo de salida ya existe:",
+    "text_16": "Después de la Conversión:",
+    "text_17": ["Preguntar", "Reemplazar", "Ignorar", "Renombrar"],
+
+    "text_18": "Eliminar original",
+    "text_19": "Abrir carpeta de salida",
+    "text_20": "Limpiar archivos de entrada",
+    "text_21": "Beep al final del proceso",
+    "text_22": "Cerrar después de la conversión",
+
+    "text_23": "Registro",
+    "text_24": "Registro",
+
+    "text_25": "Configuración",
+    "text_26": "Idioma",
+    "text_27": "Tema",
+    "text_28": ["Claro", "Oscuro"],
+
+    "text_29": "Acerca de",
+    "text_30": "Crimson Simple Image Converter",
+
+    "text_31": "Ingrese un nuevo nombre para el archivo",
+    "text_32": "¡Por favor, ingrese un nombre válido!",
+    "text_33": "Ej: Imagen",
+
+    "text_34": "¡El archivo ya existe!",
+    "text_35": "Reemplazar",
+    "text_36": "Renombrar",
+    "text_37": "Ignorar",
+    "text_38": ["* Reemplazar: Sobrescribe el archivo original con el actual.", "\n\n", "* Renombrar: Guarda el archivo con un nuevo nombre.", "\n\n", "* Ignorar: Ignorar este archivo de la Lista de Conversión."],
+
+    "text_39": "Nombre del Archivo",
+    "text_40": "Tipo de Documento",
+    "text_41": "Tamaño de la Imagen",
+    "text_42": "Tamaño del Archivo",
+    "text_43": "Fecha de Creación",
+    "text_44": "Fecha de Modificación",
+
+    "text_45": "Desconocido",
+    "text_46": "Nombre del Archivo",
+    "text_47": "Tipo de Documento",
+    "text_48": "Creador",
+    "text_49": "Productor",
+    "text_50": "Fecha de Creación",
+    "text_51": "Fecha de Modificación",
+    "text_52": "Número de Páginas",
+    "text_53": "Tamaño de las Páginas",
+    "text_54": "Tamaño del Archivo",
+    "text_55": "Versión del PDF",
+
+    "text_56": "Fecha inválida o Desconocida",
+
+    "text_57": "Convertido",
+    "text_58": "Extraído y Convertido de",
+    "text_59": "a",
+    "text_60": "Iniciando Proceso de Conversión...",
+    "text_61": "No se encontró ninguna imagen en:",
+    "text_62": "¡Proceso Finalizado!",
+    "text_63": "Ignorado",
+    "text_64": "en la Lista de Conversión",
+    "text_65": "¡Para que los cambios tengan efecto, será necesario cerrar el programa!"
+}
