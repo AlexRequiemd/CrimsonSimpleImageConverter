@@ -2,12 +2,12 @@
     "language": "pt-br",
     "theme": "light",
     "del_original": 0,
-    "open_output": 0,
+    "open_output": 1,
     "clean_input": 0,
     "finish_beep": 0,
     "finish_close": 0,
-    "output_mode": 1,
-    "output_path": "",
+    "output_mode": 0,
+    "output_path": "C:\\Users\\Alex\\Desktop\\output\\",
     "replace_option": 0,
     "format_option": 0
 }

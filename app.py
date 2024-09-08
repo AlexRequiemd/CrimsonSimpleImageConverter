@@ -1,4 +1,6 @@
 import os.path
+
+import PIL.ImageOps
 import language as lng
 import PIL.Image
 import customtkinter as ctk
@@ -12,14 +14,15 @@ from os import remove as delete
 from os import startfile as openexplorer
 from pathlib import Path
 from pikepdf import *
-from PIL import Image
+from PIL import Image, ImageCms
 from pygame import mixer
 from time import sleep
 
-data = json.load(open('data/data.json', 'r', encoding='utf-8'))
+data = json.load(
+    open('CrimsonSimpleImageConverter\\data\\data.json', 'r', encoding='utf-8'))
 mixer.init()
-beep = mixer.Sound('assets/beep.wav')
-qstn = mixer.Sound('assets/question.aiff')
+beep = mixer.Sound('CrimsonSimpleImageConverter\\assets\\beep.wav')
+qstn = mixer.Sound('CrimsonSimpleImageConverter\\assets\\question.aiff')
 
 """
 ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,11 +31,12 @@ Declarando a janela principal --------------------------------------------------
 """
 
 j_main = ctk.CTk()  # Cria a janela principal
-j_main.iconbitmap('icon.ico')
+j_main.iconbitmap('CrimsonSimpleImageConverter\\icon.ico')
 j_main.geometry('1280x720')  # tamanho da janela em px
-j_main.resizable(width=False, height=False)  # determina se é redimensionável ou não
+# determina se é redimensionável ou não
+j_main.resizable(width=False, height=False)
 j_main.title('Crimson Simple Image Converter')
-ctk.set_appearance_mode(data['theme']) #"light" ou "dark"
+ctk.set_appearance_mode(data['theme'])  # "light" ou "dark"
 
 print(f'Idioma do Sistema: {lng.current_language}')
 print(lng.opt_output4_txt[1])
@@ -49,7 +53,8 @@ entry_filevar = []
 buttons_list = []
 added_images = {}
 output_path = data['output_path']
-forms = ['.jpg', '.png', '.gif', '.bmp', '.webp', '.ico', '.tiff', '.jp2', '.pdf', '.eps']
+forms = ['.jpg', '.png', '.gif', '.bmp', '.webp',
+         '.ico', '.tiff', '.jp2', '.pdf', '.eps']
 form = ''
 replace_opt = ''
 init_conv_opt = data['format_option']
@@ -62,12 +67,12 @@ init_chk4 = ctk.IntVar(value=data['finish_beep'])
 init_chk5 = ctk.IntVar(value=data['finish_close'])
 
 
-
 """
 ----------------------------------------------------------------------------------------------------------------------------------------------
 Funções --------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------
 """
+
 
 def save_config():
     global data
@@ -97,12 +102,14 @@ def save_config():
         case 1:
             data['finish_close'] = 1
 
-    with open('data/data.json', 'w', encoding='utf-8') as file:
+    with open('CrimsonSimpleImageConverter\\data\\data.json', 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
     print('CONFIGURAÇÕES SALVAS! ________________________')
 
+
 def set_language(value=''):
     global data
+
     def close_window():
         """Fecha a janela de aviso."""
         res_bg.destroy()
@@ -116,10 +123,11 @@ def set_language(value=''):
     else:
         data['language'] = 'eng'
 
-    res_bg = ctk.CTkFrame(j_main, fg_color=None, corner_radius=0, width=1280, height=720)
+    res_bg = ctk.CTkFrame(j_main, fg_color=None,
+                          corner_radius=0, width=1280, height=720)
     res_bg.place(x=0, y=0)
     restart = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0, width=640, height=270, border_width=3,
-                          border_color='crimson')
+                           border_color='crimson')
     res_lab = ctk.CTkLabel(restart, text=lng.res_lab_txt, width=600, height=28, text_color=colors['text_c'],
                            font=subtitlefont)
     res_lab.place(x=20, y=107)
@@ -131,6 +139,7 @@ def set_language(value=''):
 
     print(f'|||| IDIOMA ATUAL: {data["language"]}')
 
+
 def play_beep():
     '''
     Excetuta o audio 'beep'.
@@ -138,12 +147,14 @@ def play_beep():
     '''
     beep.play()
 
+
 def close_app():
     '''
     Fecha a Aplicaão.
     '''
     save_config()
     j_main.quit()
+
 
 def show_image(image_path, filepath='', pdf=False):
     '''
@@ -202,9 +213,10 @@ def show_image(image_path, filepath='', pdf=False):
     except Exception as e:
         print(f"Error opening image {image_path}: {e}")
 
+
 def format_pdf_date(pdf_date):
     """
-    Formata a data no formato D:YYYYMMDDHHmmSS para DD/MM/YYYY HH:mm:SS.
+    Formata a data no formato D:YYYYMMDDHHmmSS para DD\\MM\\YYYY HH:mm:SS.
     """
     if pdf_date.startswith('D:'):
         pdf_date = pdf_date[2:]
@@ -214,6 +226,7 @@ def format_pdf_date(pdf_date):
         return date_obj.strftime('%Y-%m-%d %H:%M:%S')
     except ValueError:
         return lng.unknow_date
+
 
 def extract_pdf_info(pdf_path):
     '''
@@ -249,22 +262,23 @@ def extract_pdf_info(pdf_path):
             file_extension = os.path.splitext(pdf_path)[1].upper()
 
             # Criador e Produtor
-            creator = get_metadata('/Creator')
-            producer = get_metadata('/Producer')
+            creator = get_metadata('\\Creator')
+            producer = get_metadata('\\Producer')
 
             # Data de Criação e Modificação
-            creation_date_raw = get_metadata('/CreationDate')
+            creation_date_raw = get_metadata('\\CreationDate')
             print(creation_date_raw)
             creation_date = format_pdf_date(str(f'{creation_date_raw}'))
 
-            mod_date_raw = get_metadata('/ModDate')
+            mod_date_raw = get_metadata('\\ModDate')
             mod_date = format_pdf_date(str(f'{mod_date_raw}'))
 
             # Número de páginas
             num_pages = len(pdf.pages)
 
             # Tamanho das páginas (Largura x Altura em pontos)
-            page_sizes = [(page.MediaBox[2], page.MediaBox[3]) for page in pdf.pages]
+            page_sizes = [(page.MediaBox[2], page.MediaBox[3])
+                          for page in pdf.pages]
             page_size_w = round(page_sizes[0][0], 2)
             page_size_h = round(page_sizes[0][1], 2)
 
@@ -291,6 +305,7 @@ def extract_pdf_info(pdf_path):
                 lng.ex_pdf_txt0: f'{pdf_version}'}
     except pikepdf.PdfError as e:
         print(f"Erro ao abrir o PDF: {e}")
+
 
 def extract_image_info(image_path):
     '''
@@ -335,8 +350,10 @@ def extract_image_info(image_path):
         lng.ex_img_txt3: str(f'({image_size[0]}px, {image_size[1]}px)'),
         lng.ex_img_txt4: f'{file_size} bytes',
         lng.ex_img_txt5: str(f'{creation_time.date()} {str(creation_time.hour).zfill(2)}:{str(creation_time.minute).zfill(2)}:{str(creation_time.second).zfill(2)}'),
-        lng.ex_img_txt6: str(f'{modification_time.date()} {str(modification_time.hour).zfill(2)}:{str(modification_time.minute).zfill(2)}:{str(modification_time.second).zfill(2)}')
+        lng.ex_img_txt6: str(f'{modification_time.date()} {str(modification_time.hour).zfill(2)}:{
+                             str(modification_time.minute).zfill(2)}:{str(modification_time.second).zfill(2)}')
     }
+
 
 def on_button_click(image_path, n_file_path, pdf=False):
     '''
@@ -357,6 +374,7 @@ def on_button_click(image_path, n_file_path, pdf=False):
         show_image(image_path=image_path, filepath=n_file_path, pdf=False)
     else:
         show_image(image_path=image_path, filepath=n_file_path, pdf=True)
+
 
 def load_files():
     '''
@@ -381,20 +399,25 @@ def load_files():
     try:
         temp_filenames = fd.askopenfilenames(filetypes=[("All Supported files", "*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.ico;*.webp;*.tiff;*.tif;*.jp2;*.j2k;*.jfif;*.pdf"),
                                                         ('PNG (Portable Network Graphics)', '*.png'),
-                                                        ('JPEG (Joint Photographic Experts Group)', '*.jpg;*.jpeg'),
+                                                        ('JPEG (Joint Photographic Experts Group)',
+                                                         '*.jpg;*.jpeg'),
                                                         ('GIF (Graphics Interchange Format)', '*.gif'),
                                                         ('BMP (Bitmap)', '*.bmp'),
                                                         ('ICO (Icon)', '*.ico'),
-                                                        ('WEBP (Web Picture format)', '*.webp'),
+                                                        ('WEBP (Web Picture format)',
+                                                         '*.webp'),
                                                         ('JFIF (JPEG File Interchange Format)', '*.jfif'),
-                                                        ('TIFF (Tagged Image File Format)', '*.tiff;*.tif'),
-                                                        ('JPEG2K (JPEG 2000)', '*.jp2;*.j2k'),
+                                                        ('TIFF (Tagged Image File Format)',
+                                                         '*.tiff;*.tif'),
+                                                        ('JPEG2K (JPEG 2000)',
+                                                         '*.jp2;*.j2k'),
                                                         ('PDF (Portable Document Format)', '*.pdf')])
         print(f'Temp List: {temp_filenames}')
         # Adicionar arquivos à lista filenames
         for c in temp_filenames:
             dr = str(c)
-            dr = dr.replace('[', '').replace(']', '')  # Correção na substituição
+            # Correção na substituição
+            dr = dr.replace('[', '').replace(']', '')
             if dr not in filenames:  # Evitar duplicatas
                 filenames.append(dr)
         print(f'filenames List: {filenames}')
@@ -407,6 +430,7 @@ def load_files():
         print(f'Temp List: {temp_filenames}')
         print(fr_entry.winfo_children())
         refresh_info_text(msg=f'{len(filenames)} {lng.lab_info_txt}')
+
 
 def bulk_load_files():
     '''
@@ -451,17 +475,19 @@ def bulk_load_files():
                 inputname = Path(filename).stem + input_form
                 img_name = f'{inputname}'
 
-                orimg1 = Image.open('./assets/pdf_icon.png')
+                orimg1 = Image.open(
+                    'CrimsonSimpleImageConverter\\assets\\pdf_icon.png')
                 orimg1.filename = img_name
                 orimg1.thumbnail(icon_size)
-                # orimg2 = Image.open('./assets/pdf_icon.png')
+                # orimg2 = Image.open('CrimsonSimpleImageConverter\\assets\\pdf_icon.png')
                 # orimg2.filename = img_name
                 # orimg2.thumbnail(view_size)
             else:
                 icon_size = (100, 100)
                 view_size = (450, 320)
                 input_form = Path(filenames[i]).suffix
-                inputname = Path(Image.open(filenames[i]).filename).stem + input_form
+                inputname = Path(Image.open(
+                    filenames[i]).filename).stem + input_form
                 img_name = f'{inputname}'
 
                 orimg1 = Image.open(filenames[i])
@@ -484,7 +510,7 @@ def bulk_load_files():
         print(filepath)
         if filepath.endswith('.pdf'):
             _i_filepath = filepath
-            _filepath = './assets/pdf_icon.png'
+            _filepath = 'CrimsonSimpleImageConverter\\assets\\pdf_icon.png'
             print('=' * 15, f'{_filepath}')
             button = ctk.CTkButton(fr_entry, image=added_images[filepath], text=None, width=102, height=102,
                                    border_width=None, corner_radius=0, fg_color='crimson', hover_color='indianred1',
@@ -507,6 +533,7 @@ def bulk_load_files():
         if row >= 167:
             break  # Para de adicionar se atingir o limite de 100 linhas
     print(f'Converted Button List: {entry_filevar}')
+
 
 def clear_files():
     '''
@@ -531,6 +558,7 @@ def clear_files():
     refresh_info_text(f'{len(filenames)} {lng.lab_info_txt}')
     print(f'NEW FILENAMES {filenames}')
 
+
 def load_output_path():
     '''
     Carrega o diretório da
@@ -539,12 +567,13 @@ def load_output_path():
     :return:
     '''
     global output_path
-    output_path = fd.askdirectory()+'/'
+    output_path = fd.askdirectory().replace('/', '\\')+'\\'
     entry_text = ctk.StringVar(value=output_path)
     entry_output.configure(state=ctk.NORMAL, textvariable=entry_text)
     data['output_path'] = output_path
     entry_output.configure(state=ctk.DISABLED)
     print(f'{output_path}')
+
 
 def set_alreadyexistent_file(value=''):
     '''
@@ -555,20 +584,20 @@ def set_alreadyexistent_file(value=''):
     '''
     global replace_opt
 
-    if value == lng.opt_output2_txt[0]: #Perguntar
+    if value == lng.opt_output2_txt[0]:  # Perguntar
         replace_opt = value
         data['replace_option'] = 0
-    elif value == lng.opt_output2_txt[1]: #Substituir
+    elif value == lng.opt_output2_txt[1]:  # Substituir
         replace_opt = value
         data['replace_option'] = 1
-    elif value == lng.opt_output2_txt[2]: #Ignorar
+    elif value == lng.opt_output2_txt[2]:  # Ignorar
         replace_opt = value
         data['replace_option'] = 2
-    elif value == lng.opt_output2_txt[3]: #Renomear
+    elif value == lng.opt_output2_txt[3]:  # Renomear
         replace_opt = value
         data['replace_option'] = 3
     else:
-        replace_opt = lng.opt_output2_txt[0] #Perguntar
+        replace_opt = lng.opt_output2_txt[0]  # Perguntar
         data['replace_option'] = 0
     print(f'Replace Options: {replace_opt}')
 
@@ -583,7 +612,7 @@ def set_output_format(value=''):
     global form
 
     if value == 'JPG - .jpg, .jpeg, .jfif':
-        form = forms[0] # '.jpg'
+        form = forms[0]  # '.jpg'
         data['format_option'] = 0
         print('Mudou para JPG')
     elif value == 'PNG - .png':
@@ -627,6 +656,7 @@ def set_output_format(value=''):
         data['format_option'] = 0
     print(filenames)
 
+
 def contains_prohibited_chars(filename):
     '''
     Checa se há um caractere "inválido"
@@ -634,20 +664,21 @@ def contains_prohibited_chars(filename):
     valor 'True' ou 'False'.
 
     Caracteres Proibidos no Windows:
-        [\/:*?"<>|]
+        [\\\:*?"<>|]
     Caracteres Proibidos no Linux:
-        [\/]
+        [\\\]
     :param filename:
     :return:
     '''
     # Definindo os caracteres proibidos em diferentes sistemas operacionais
-    prohibited_chars = r'[\/:*?"<>|]'  # Proibidos no Windows
-    prohibited_unix_mac = r'[\/]'      # Proibidos no Unix/Linux e macOS
+    prohibited_chars = r'[\\\:*?"<>|]'  # Proibidos no Windows
+    prohibited_unix_mac = r'[\\\]'      # Proibidos no Unix\\Linux e macOS
 
     # Verificando se há caracteres proibidos na string
     if re.search(prohibited_chars, filename) or re.search(prohibited_unix_mac, filename):
         return True
     return False
+
 
 def ask_replace_file_on_save(image, output, orig_name):
     '''
@@ -659,6 +690,7 @@ def ask_replace_file_on_save(image, output, orig_name):
     :return:
     '''
     print('='*300)
+
     def on_replace():
 
         nonlocal user_choice
@@ -685,7 +717,8 @@ def ask_replace_file_on_save(image, output, orig_name):
         new_output = f'{new_dir}{new_name}{form}'
         print(f'New Output: {new_output}')
         image.save(new_output)
-        add_to_log(f"{lng.ltxt_Converted} [ {orig_name} ] {lng.ltxt_To} [ {new_name}{form} ].")
+        add_to_log(f"{lng.ltxt_Converted} [ {orig_name} ] {
+                   lng.ltxt_To} [ {new_name}{form} ].")
         print('=' * 30)
 
     def ask_user_action():
@@ -703,21 +736,25 @@ def ask_replace_file_on_save(image, output, orig_name):
                 dlg_bg.destroy()
                 dialog.destroy()
 
-        dlg_bg = ctk.CTkFrame(j_main, fg_color=None, corner_radius=0, width=1280, height=720)
+        dlg_bg = ctk.CTkFrame(j_main, fg_color=None,
+                              corner_radius=0, width=1280, height=720)
         dlg_bg.place(x=0, y=0)
-        dialog = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0, width=640, height=270, border_width=3, border_color='crimson')
-        dlg_lab = ctk.CTkLabel(dialog, text=lng.dlg_lab_txt, width=600, height=28, text_color=colors['text_c'], font=subtitlefont)
+        dialog = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0,
+                              width=640, height=270, border_width=3, border_color='crimson')
+        dlg_lab = ctk.CTkLabel(dialog, text=lng.dlg_lab_txt, width=600,
+                               height=28, text_color=colors['text_c'], font=subtitlefont)
         dlg_lab.place(x=20, y=10)
-        dlg_bt1 = ctk.CTkButton(dialog, text=lng.dlg_bt1_txt, text_color=colors['text_c'] ,width=600, font=buttonfont, fg_color=colors['button_c'], hover_color='crimson',
-                                command= lambda f='replace': get_input(f))
+        dlg_bt1 = ctk.CTkButton(dialog, text=lng.dlg_bt1_txt, text_color=colors['text_c'], width=600, font=buttonfont, fg_color=colors['button_c'], hover_color='crimson',
+                                command=lambda f='replace': get_input(f))
         dlg_bt1.place(x=20, y=40)
-        dlg_bt2 = ctk.CTkButton(dialog, text=lng.dlg_bt2_txt, text_color=colors['text_c'], width=600, font=buttonfont,fg_color=colors['button_c'], hover_color='crimson',
-                                command= lambda f='rename': get_input(f))
+        dlg_bt2 = ctk.CTkButton(dialog, text=lng.dlg_bt2_txt, text_color=colors['text_c'], width=600, font=buttonfont, fg_color=colors['button_c'], hover_color='crimson',
+                                command=lambda f='rename': get_input(f))
         dlg_bt2.place(x=20, y=78)
-        dlg_bt3 = ctk.CTkButton(dialog, text=lng.dlg_bt3_txt, text_color=colors['text_c'], width=600, font=buttonfont,fg_color=colors['button_c'], hover_color='crimson',
-                                command= lambda f='ignore': get_input(f))
+        dlg_bt3 = ctk.CTkButton(dialog, text=lng.dlg_bt3_txt, text_color=colors['text_c'], width=600, font=buttonfont, fg_color=colors['button_c'], hover_color='crimson',
+                                command=lambda f='ignore': get_input(f))
         dlg_bt3.place(x=20, y=116)
-        dlg_info = ctk.CTkTextbox(dialog, text_color=colors['text_c'], width=600, height=103, font=buttonfont, fg_color=colors['buttondisable_c'])
+        dlg_info = ctk.CTkTextbox(
+            dialog, text_color=colors['text_c'], width=600, height=103, font=buttonfont, fg_color=colors['buttondisable_c'])
         dlg_info.insert('0.0', lng.dlg_info_txt)
         dlg_info.place(x=20, y=154)
         dlg_info.configure(state=ctk.DISABLED)
@@ -741,14 +778,19 @@ def ask_replace_file_on_save(image, output, orig_name):
                     ren_bg.destroy()
                     rename.destroy()
         nonlocal n_name
-        ren_bg = ctk.CTkFrame(j_main, fg_color=None, corner_radius=0, width=1280, height=720)
+        ren_bg = ctk.CTkFrame(j_main, fg_color=None,
+                              corner_radius=0, width=1280, height=720)
         ren_bg.place(x=0, y=0)
-        rename = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0, width=640, height=270, border_width=3, border_color='crimson')
-        ren_lab = ctk.CTkLabel(rename, text=lng.ren_lab_txt, width=600, height=28, text_color=colors['text_c'], font=titlefont)
+        rename = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0,
+                              width=640, height=270, border_width=3, border_color='crimson')
+        ren_lab = ctk.CTkLabel(rename, text=lng.ren_lab_txt, width=600,
+                               height=28, text_color=colors['text_c'], font=titlefont)
         ren_lab.place(x=20, y=20)
-        ren_warning = ctk.CTkLabel(rename, text=lng.ren_warning_txt, width=600, height=28, text_color='crimson', font=buttonfont)
+        ren_warning = ctk.CTkLabel(rename, text=lng.ren_warning_txt,
+                                   width=600, height=28, text_color='crimson', font=buttonfont)
         ren_warning.place(x=20, y=800)
-        ren_entry = ctk.CTkEntry(rename, font=buttonfont, width=300, placeholder_text=lng.ren_entry_txt, border_color='crimson')
+        ren_entry = ctk.CTkEntry(rename, font=buttonfont, width=300,
+                                 placeholder_text=lng.ren_entry_txt, border_color='crimson')
         n_name = ren_entry.get()
         print(f'Name New: {n_name}')
         ren_entry.place(x=170, y=121)
@@ -761,7 +803,8 @@ def ask_replace_file_on_save(image, output, orig_name):
     def replace_action():
         current_name = os.path.basename(output)
         image.save(output)
-        add_to_log(f"{lng.ltxt_Converted} [ {orig_name} ] {lng.ltxt_To} [ {current_name} ].")
+        add_to_log(f"{lng.ltxt_Converted} [ {orig_name} ] {
+                   lng.ltxt_To} [ {current_name} ].")
 
     def procces_choices():
         if user_choice == 'replace':
@@ -771,7 +814,8 @@ def ask_replace_file_on_save(image, output, orig_name):
             rename_action()
             print(f'Renomear e Salvar como: {output}')
         elif user_choice == 'ignore':
-            add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {lng.ltxt_FromConversionList}.")
+            add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {
+                       lng.ltxt_FromConversionList}.")
             print(f'Ignorar Arquivo')
 
     if os.path.exists(output):
@@ -789,7 +833,8 @@ def ask_replace_file_on_save(image, output, orig_name):
                     case 'Renomear':
                         rename_action()
                     case 'Ignorar':
-                        add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {lng.ltxt_FromConversionList}.")
+                        add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {
+                                   lng.ltxt_FromConversionList}.")
                         print(f'Ignorar Arquivo')
             case 'eng':
                 print('INGLES')
@@ -803,7 +848,8 @@ def ask_replace_file_on_save(image, output, orig_name):
                     case 'Rename':
                         rename_action()
                     case 'Ignore':
-                        add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {lng.ltxt_FromConversionList}.")
+                        add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {
+                                   lng.ltxt_FromConversionList}.")
                         print(f'Ignorar Arquivo')
             case 'spa':
                 print('ESPANHOL')
@@ -817,7 +863,8 @@ def ask_replace_file_on_save(image, output, orig_name):
                     case 'Renombrar':
                         rename_action()
                     case 'Ignorar':
-                        add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {lng.ltxt_FromConversionList}.")
+                        add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {
+                                   lng.ltxt_FromConversionList}.")
                         print(f'Ignorar Arquivo')
         match replace_opt:
             case 'Perguntar', 'Ask', 'Preguntar':
@@ -829,12 +876,14 @@ def ask_replace_file_on_save(image, output, orig_name):
             case 'Renomear', 'Rename', 'Renombrar':
                 rename_action()
             case 'Ignorar', 'Ignore':
-                add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {lng.ltxt_FromConversionList}.")
+                add_to_log(f"{lng.ltxt_Ignored} [ {orig_name} ] {
+                           lng.ltxt_FromConversionList}.")
                 print(f'Ignorar Arquivo')
     else:
         current_name = os.path.basename(output)
         image.save(output)
-        add_to_log(f"{lng.ltxt_Converted} [ {orig_name} ] {lng.ltxt_To} [ {current_name} ].")
+        add_to_log(f"{lng.ltxt_Converted} [ {orig_name} ] {
+                   lng.ltxt_To} [ {current_name} ].")
 
 
 def check_beep():
@@ -984,9 +1033,10 @@ def convert():
     print(f'filenames[0]: {filenames[0]}')
     add_to_log(lng.ltxt_StartingProccess)
     if filenames[0].endswith(".pdf"):
-        auto_output = f'{os.path.dirname(filenames[0])}{"/"}'
+        auto_output = f'{os.path.dirname(filenames[0])}{"\\"}'
     else:
-        auto_name = Path(Image.open(filenames[0]).filename).stem + Path(filenames[0]).suffix
+        auto_name = Path(Image.open(
+            filenames[0]).filename).stem + Path(filenames[0]).suffix
         print(f'InputDir = {filenames[0]}')
         print(f'AutoName = {auto_name}')
         auto_output = filenames[0].replace(auto_name, '')
@@ -994,7 +1044,7 @@ def convert():
     for i in filenames:
         print(f'Manual Output: {output_path}')
         print(f'Auto Output: {auto_output}')
-        if var == 1: #AUTO
+        if var == 1:  # AUTO
             if i.endswith('.pdf'):
                 inputname = f'{os.path.basename(i)}'
                 input_form = Path(i).suffix
@@ -1015,8 +1065,7 @@ def convert():
                     # add_to_log(f"Convertido [ {inputname} ] para [ {outputname} ].")
                     print(f"Convertido {inputname} para {outputname}")
 
-
-        elif var == 0: #MANUAL
+        elif var == 0:  # MANUAL
             if i.endswith('.pdf'):
                 inputname = f'{os.path.basename(i)}'
                 input_form = Path(i).suffix
@@ -1049,12 +1098,14 @@ def convert():
         check_open_output_folder(output_path)
         sleep(.5)
         check_close_after()
-def color_mode_convert(image_file=PIL.Image.Image, input_mode='', output_mode='', auto=False, multiple=False):
+
+
+def color_mode_convert(image_file=PIL.Image.Image, input_mode='', output_mode='', auto=False, multiple=False, is_pdf=False):
     '''
     Carrega uma imagem do pillow 'image_file'
     e converte o mode de cores.
     a forma como feita será com base n 'auto'
-    está ativo ou não (True/False) irá comparar
+    está ativo ou não (True|False) irá comparar
     o 'input_mode'.
     auto=True:
         Converte para RGB, caso
@@ -1070,164 +1121,38 @@ def color_mode_convert(image_file=PIL.Image.Image, input_mode='', output_mode=''
     :param multiple: Se serão múltiplas imagens.
     :return:
     '''
+    def invert_cmyk(image_file):
+        # Verifique se a imagem está em CMYK
+        if image_file.mode != 'CMYK':
+            raise ValueError(
+                "A imagem deve estar no modo CMYK para esta operação.")
+
+        # Carregar os canais CMYK
+        c, m, y, k = image_file.split()
+
+        # Inverter os canais
+        c = Image.eval(c, lambda x: 255 - x)
+        m = Image.eval(m, lambda x: 255 - x)
+        y = Image.eval(y, lambda x: 255 - x)
+        k = Image.eval(k, lambda x: 255 - x)
+
+        # Juntar os canais invertidos de volta em uma imagem CMYK
+        inverted_image = Image.merge('CMYK', (c, m, y, k))
+
+        return inverted_image
+
     print('='*100)
     print(f'Imagem de Entrada: {image_file} | Modo de Entrada: {input_mode}')
-    if auto == True:
-        print('Comparando modo de Imagem')
-        match input_mode:
-            case 'CMYK':
-                match form:
-                    case '.png':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('='*100)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('='*100)
-                            return new_image_file
-                    case '.gif':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.bmp':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.webp':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.ico':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.tiff':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.jp2':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.eps':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.pdf':
-                        if multiple == True:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('RGB')
-                            print(f'Convertido para {input_mode} para RGB')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                    case '.jpg':
-                        if multiple == True:
-                            new_image_file = image_file.convert('CMYK')
-                            print(f'Convertido para {input_mode} para CMYK')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-                        else:
-                            new_image_file = image_file.convert('CMYK')
-                            print(f'Convertido para {input_mode} para CMYK')
-                            print(f'Novo modo de Imagem : {new_image_file}')
-                            print('=' * 30)
-                            return new_image_file
-            case 'RGBA':
-                match form:
-                    case '.jpg':
-                        new_image_file = image_file.convert('RGB')
-                        print(f'Convertido para {input_mode} para RGB')
-                        print(f'Novo modo de Imagem : {new_image_file}')
-                        return new_image_file
-                    case '.eps':
-                        new_image_file = image_file.convert('RGB')
-                        print(f'Convertido para {input_mode} para RGB')
-                        print(f'Novo modo de Imagem : {new_image_file}')
-                        return new_image_file
-            case 'RGB':
-                new_image_file = image_file.convert('RGB')
-                print(f'Convertido para {input_mode} para RGB')
-                print(f'Novo modo de Imagem : {new_image_file}')
-                return new_image_file
+    if is_pdf == True and input_mode == 'CMYK':
+        _image_file = invert_cmyk(image_file)
+        new_image_file = _image_file
     else:
-        new_image_file = image_file.convert(output_mode)
-        print(f'Novo modo de Imagem : {new_image_file}')
-        return new_image_file
+        new_image_file = image_file.convert("RGB")
+
+    print(f'Convertido de {input_mode} para RGB')
+    print(f'Novo modo de Imagem : {new_image_file}')
+    return new_image_file
+
 
 def convert_from_pdf_file(file='', prev_name='', new_name='', output_path=''):
     '''
@@ -1247,7 +1172,7 @@ def convert_from_pdf_file(file='', prev_name='', new_name='', output_path=''):
     :return:
     '''
     filename = new_name.replace(form, '')
-    pdf_file = Pdf.open(file)
+    pdf_file = Pdf.open(file, allow_overwriting_input=True)
     count = 1
     count_img = 0
     for pagina in pdf_file.pages:
@@ -1257,23 +1182,27 @@ def convert_from_pdf_file(file='', prev_name='', new_name='', output_path=''):
             print(len(pdf_file.pages))
             print('=' * 100)
             if len(pdf_file.pages) > 1:
+                print('~'*100)
                 print('=' * 100)
                 print(f'PDF Names: {name}')
-                print(imagem)
-                imagem['/ColorSpace'] = pikepdf.Name('/DeviceRGB')
+                print(f'Imagem Velha : {imagem}')
                 _Image = PdfImage(imagem).as_pil_image()
                 print(f'Modo de Imagem Inicial: {_Image._mode}')
                 print(f'Imagem ANTES : {_Image}')
                 print('MAIS DE 1')
                 print('Convertendo Modo de Imagem...')
-                n_Image = color_mode_convert(image_file=_Image, auto=True, input_mode=_Image._mode, multiple=True)
-                print(n_Image)
+                n_Image = color_mode_convert(
+                    image_file=_Image, input_mode=_Image._mode, is_pdf=True)
+
+                print(f'Imagem Nova : {n_Image}')
                 new_name = f'{filename}_{count}{form}'
                 n_Image.save(f'{output_path}{filename}_{count}{form}')
-                add_to_log(f"{lng.ltxt_ExtractedAndConvertedFrom} [ {prev_name} ] {lng.ltxt_To} [ {new_name} ].")
+                add_to_log(f"{lng.ltxt_ExtractedAndConvertedFrom} [ {
+                           prev_name} ] {lng.ltxt_To} [ {new_name} ].")
                 count_img += 1
                 print(f"Extraído e Convertido de {prev_name} para {new_name}")
                 print('=' * 100)
+                print('~'*100)
             else:
                 print('=' * 100)
                 print(f'PDF Names: {name}')
@@ -1283,10 +1212,13 @@ def convert_from_pdf_file(file='', prev_name='', new_name='', output_path=''):
                 print(f'Imagem ANTES : {_Image}')
                 print(f'Imagem ANTES : {_Image}')
                 print('MENOS DE 1')
-                n_Image = color_mode_convert(image_file=_Image, auto=True, input_mode=_Image._mode, multiple=False)
+                n_Image = color_mode_convert(
+                    image_file=_Image, input_mode=_Image._mode, is_pdf=True)
+
                 print(n_Image)
                 n_Image.save(f'{output_path}{new_name}')
-                add_to_log(f"{lng.ltxt_Converted} [ {prev_name} ] {lng.ltxt_To} [ {new_name} ].")
+                add_to_log(f"{lng.ltxt_Converted} [ {prev_name} ] {
+                           lng.ltxt_To} [ {new_name} ].")
                 count_img += 1
                 print(f"Convertido {prev_name} para {new_name}")
                 print('=' * 100)
@@ -1295,6 +1227,8 @@ def convert_from_pdf_file(file='', prev_name='', new_name='', output_path=''):
             count += 1
         if count_img <= 0:
             add_to_log(f"{lng.ltxt_NoImageFoundIn} [ {prev_name} ].")
+
+
 def convert_to_jpg_file(file='', prev_name='', new_name='', output_path=''):
     '''
     Abre a imagem com o pillow usando
@@ -1312,6 +1246,8 @@ def convert_to_jpg_file(file='', prev_name='', new_name='', output_path=''):
     out = f'{output_path}{new_name}'
     ask_replace_file_on_save(img, out, prev_name)
     # Image.open(file).convert('RGB').save(f'{output_path}{new_name}')
+
+
 def convert_other_file(file='', prev_name='', new_name='', output_path=''):
     '''
     Abre a imagem com o pilow usando
@@ -1326,10 +1262,12 @@ def convert_other_file(file='', prev_name='', new_name='', output_path=''):
     :return:
     '''
     image_file = Image.open(file)
-    image_file_new = color_mode_convert(image_file=image_file, auto=False, input_mode=image_file._mode)
+    image_file_new = color_mode_convert(
+        image_file=image_file, auto=False, input_mode=image_file._mode)
     out = f'{output_path}{new_name}'
     ask_replace_file_on_save(image_file_new, out, prev_name)
     # image_file_new.save(f'{output_path}{new_name}')
+
 
 def set_colors():
     """
@@ -1349,20 +1287,29 @@ def set_colors():
     fr_output1.configure(fg_color=colors['frame_c'])
     fr_output2.configure(fg_color=colors['frame_c'])
     fr_output3.configure(fg_color=colors['frame_c'])
-    fr_entry.configure(fg_color=colors['frame_c'], scrollbar_button_color=colors['scrollbar_c'])
+    fr_entry.configure(
+        fg_color=colors['frame_c'], scrollbar_button_color=colors['scrollbar_c'])
     fr_imgvisu.configure(fg_color=colors['frame_c'])
     fr_config1.configure(fg_color=colors['frame_c'])
     fr_config2.configure(fg_color=colors['frame_c'])
     fr_about1.configure(fg_color=colors['frame_c'])
-    fr_about2.configure(fg_color=colors['frame_c'], scrollbar_button_color=colors['scrollbar_c'], text_color=colors['text_c'])
-    fr_log.configure(fg_color=colors['frame_c'], scrollbar_button_color=colors['scrollbar_c'], text_color=colors['text_c'])
+    fr_about2.configure(
+        fg_color=colors['frame_c'], scrollbar_button_color=colors['scrollbar_c'], text_color=colors['text_c'])
+    fr_log.configure(
+        fg_color=colors['frame_c'], scrollbar_button_color=colors['scrollbar_c'], text_color=colors['text_c'])
     tab_main.configure(text_color=colors['text_c'], )
-    bt_loadfiles.configure(fg_color=colors['button_c'], text_color=colors['text_c'])
-    bt_clear.configure(fg_color=colors['button_c'], text_color=colors['text_c'])
-    bt_loadfolder.configure(fg_color=colors['button_c'], text_color=colors['text_c'])
-    bt_close.configure(fg_color=colors['button_c'], text_color=colors['text_c'])
-    bt_start.configure(fg_color=colors['button_c'], text_color=colors['text_c'])
-    bt_output.configure(fg_color=colors['button_c'], text_color=colors['text_c'])
+    bt_loadfiles.configure(
+        fg_color=colors['button_c'], text_color=colors['text_c'])
+    bt_clear.configure(
+        fg_color=colors['button_c'], text_color=colors['text_c'])
+    bt_loadfolder.configure(
+        fg_color=colors['button_c'], text_color=colors['text_c'])
+    bt_close.configure(
+        fg_color=colors['button_c'], text_color=colors['text_c'])
+    bt_start.configure(
+        fg_color=colors['button_c'], text_color=colors['text_c'])
+    bt_output.configure(
+        fg_color=colors['button_c'], text_color=colors['text_c'])
     tab_main._segmented_button.configure(fg_color=colors['button_c'], unselected_color=colors['buttonunselect_c'],
                                          unselected_hover_color=colors['buttonhoverunselect_c'])
     opt_output1.configure(fg_color=colors['button_c'], button_color=colors['button_c'],
@@ -1380,11 +1327,14 @@ def set_colors():
     check_output3.configure(border_color=colors['scrollbar_c'])
     check_output4.configure(border_color=colors['scrollbar_c'])
     check_output5.configure(border_color=colors['scrollbar_c'])
-    entry_output.configure(text_color=colors['text_c'], fg_color=colors['button_c'])
+    entry_output.configure(
+        text_color=colors['text_c'], fg_color=colors['button_c'])
     lab_logo2.configure(text_color=colors['text_c'])
     lab_img_preview.configure(fg_color=colors['preview_c'])
-    img_info.configure(fg_color=colors['preview_c'], text_color=colors['text_c'])
+    img_info.configure(
+        fg_color=colors['preview_c'], text_color=colors['text_c'])
     radio_event()
+
 
 def set_theme(valor):
     """
@@ -1402,6 +1352,7 @@ def set_theme(valor):
         data['theme'] = 'light'
 
     set_colors()
+
 
 def themeset(color_l, color_d, color_m=""):
     """
@@ -1421,6 +1372,7 @@ def themeset(color_l, color_d, color_m=""):
         color_m = color_d
     return color_m
 
+
 def radio_event():
     '''
     Checa qual radio_button está
@@ -1434,13 +1386,17 @@ def radio_event():
     '''
     valor = radiovar.get()
     if valor == 1:
-        bt_output.configure(state=ctk.DISABLED, fg_color=colors['buttondisable_c'])
-        entry_output.configure(text_color=colors['textdisable_c'], fg_color=colors['buttondisable_c'])
+        bt_output.configure(state=ctk.DISABLED,
+                            fg_color=colors['buttondisable_c'])
+        entry_output.configure(
+            text_color=colors['textdisable_c'], fg_color=colors['buttondisable_c'])
         data['output_mode'] = 1
     else:
-        entry_output.configure(text_color=colors['text_c'], fg_color=colors['button_c'])
+        entry_output.configure(
+            text_color=colors['text_c'], fg_color=colors['button_c'])
         bt_output.configure(state=ctk.NORMAL, fg_color=colors['button_c'])
         data['output_mode'] = 0
+
 
 def add_to_log(_text=''):
     '''
@@ -1455,6 +1411,7 @@ def add_to_log(_text=''):
     fr_log.insert(ctk.END, text=f'{_text}'+'\n\n')
     fr_log.yview(ctk.END)
     fr_log.configure(state=ctk.DISABLED)
+
 
 def refresh_info_text(msg=f'{len(filenames)} {lng.lab_info_txt}'):
     '''
@@ -1473,19 +1430,20 @@ Assets -------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------
 """
 
-img_folder = ctk.CTkImage(light_image=Image.open('assets/folder_icon_dark.png'),
-                          dark_image=Image.open('assets/folder_icon.png'), size=(24, 20))
-img_folderplus = ctk.CTkImage(light_image=Image.open('assets/folderplus_icon_dark.png'),
-                              dark_image=Image.open('assets/folderplus_icon.png'), size=(24, 20))
-img_clean = ctk.CTkImage(light_image=Image.open('assets/clean_icon_dark.png'),
-                         dark_image=Image.open('assets/clean_icon.png'), size=(28, 20))
-img_convert = ctk.CTkImage(light_image=Image.open('assets/convert_icon_dark.png'),
-                         dark_image=Image.open('assets/convert_icon.png'), size=(22, 20))
-img_close = ctk.CTkImage(light_image=Image.open('assets/close_icon_dark.png'),
-                         dark_image=Image.open('assets/close_icon.png'), size=(22, 20))
-img_logo = ctk.CTkImage(light_image=Image.open('assets/logo.png'),
-                        dark_image=Image.open('assets/logo.png'), size=(250, 250))
-img_previewbg = ctk.CTkImage(light_image=Image.open('assets\\preview_bg.png'), size=(450, 320))
+img_folder = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\folder_icon_dark.png'),
+                          dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\folder_icon.png'), size=(24, 20))
+img_folderplus = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\folderplus_icon_dark.png'),
+                              dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\folderplus_icon.png'), size=(24, 20))
+img_clean = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\clean_icon_dark.png'),
+                         dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\clean_icon.png'), size=(28, 20))
+img_convert = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\convert_icon_dark.png'),
+                           dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\convert_icon.png'), size=(22, 20))
+img_close = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\close_icon_dark.png'),
+                         dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\close_icon.png'), size=(22, 20))
+img_logo = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\logo.png'),
+                        dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\logo.png'), size=(250, 250))
+img_previewbg = ctk.CTkImage(light_image=Image.open(
+    'CrimsonSimpleImageConverter\\assets\\preview_bg.png'), size=(450, 320))
 colors = {'text_c': themeset('black', 'white'), 'frame_c': themeset('gray91', 'gray20'), 'button_c': themeset('gray100', 'gray30'),
           'buttonunselect_c': themeset('gray75', 'gray40'), 'buttonhoverunselect_c': themeset('gray91', 'gray60'),
           'scrollbar_c': themeset('gray75', 'gray30'), 'buttondisable_c': themeset('gray75', 'gray15'),
@@ -1505,11 +1463,11 @@ Abas ---------------------------------------------------------------------------
 tab_main = ctk.CTkTabview(j_main, border_width=0, corner_radius=6,
                           segmented_button_selected_color='crimson', segmented_button_selected_hover_color='indianred1',
                           width=1250, height=700, text_color=colors['text_c'])
-tab_main.add(lng.t_input) #Entrada
-tab_main.add(lng.t_output) #Saída
-tab_main.add(lng.t_log) #Registro
-tab_main.add(lng.t_settings) #Configurações
-tab_main.add(lng.t_about) #Sobre
+tab_main.add(lng.t_input)  # Entrada
+tab_main.add(lng.t_output)  # Saída
+tab_main.add(lng.t_log)  # Registro
+tab_main.add(lng.t_settings)  # Configurações
+tab_main.add(lng.t_about)  # Sobre
 tab_main._segmented_button.configure(font=buttonfont, fg_color=colors['button_c'],
                                      unselected_color=colors['buttonunselect_c'], unselected_hover_color=colors['buttonhoverunselect_c'])
 tab_main.pack()
@@ -1517,7 +1475,8 @@ tab_main.pack()
 """
 Conteúdo aba ENTRADA -------------------------------------------------------------------------------------------------------------------------
 """
-lab_info = ctk.CTkTextbox(tab_main.tab(lng.t_input), font=buttonfont, width=315, height=28)
+lab_info = ctk.CTkTextbox(tab_main.tab(lng.t_input),
+                          font=buttonfont, width=315, height=28)
 lab_info.insert('0.0', text=f'{len(filenames)} {lng.lab_info_txt}')
 lab_info.place(x=620, y=10)
 
@@ -1544,12 +1503,14 @@ bt_close.place(x=1095, y=10)
 fr_entry = ctk.CTkScrollableFrame(tab_main.tab(lng.t_input), width=700, height=585, fg_color=colors['frame_c'],
                                   scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson')
 fr_entry.place(x=20, y=48)
-fr_imgvisu = ctk.CTkFrame(tab_main.tab(lng.t_input), width=470, height=596, fg_color=colors['frame_c'])
-lab_img_preview = ctk.CTkLabel(fr_imgvisu, text=None, width=450, height=320, fg_color=colors['preview_c'])
+fr_imgvisu = ctk.CTkFrame(tab_main.tab(lng.t_input),
+                          width=470, height=596, fg_color=colors['frame_c'])
+lab_img_preview = ctk.CTkLabel(
+    fr_imgvisu, text=None, width=450, height=320, fg_color=colors['preview_c'])
 lab_img_preview.place(x=10, y=10)
 img_info = ctk.CTkTextbox(fr_imgvisu, width=450, height=245, fg_color=colors['preview_c'],
-                           scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
-                           font=buttonfont, text_color=colors['text_c'], corner_radius=0)
+                          scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
+                          font=buttonfont, text_color=colors['text_c'], corner_radius=0)
 img_info.insert('0.0', text=' ')
 img_info.configure(state=ctk.DISABLED)
 img_info.place(x=10, y=340)
@@ -1558,14 +1519,18 @@ fr_imgvisu.place(x=750, y=48)
 """
 Conteúdo aba SAÍDA--------------------------------------------------------------------------------------------------------------------------
 """
-###### Labels Principais da Tab SAÍDA
-lab_output1 = ctk.CTkLabel(tab_main.tab(lng.t_output), text=lng.lab_output1_txt, font=titlefont).place(x=20, y=10)
-lab_output2 = ctk.CTkLabel(tab_main.tab(lng.t_output), text=lng.lab_output2_txt, font=titlefont).place(x=20, y=168)
-lab_output3 = ctk.CTkLabel(tab_main.tab(lng.t_output), text=lng.lab_output3_txt, font=titlefont).place(x=20, y=326)
+# Labels Principais da Tab SAÍDA
+lab_output1 = ctk.CTkLabel(tab_main.tab(
+    lng.t_output), text=lng.lab_output1_txt, font=titlefont).place(x=20, y=10)
+lab_output2 = ctk.CTkLabel(tab_main.tab(
+    lng.t_output), text=lng.lab_output2_txt, font=titlefont).place(x=20, y=168)
+lab_output3 = ctk.CTkLabel(tab_main.tab(
+    lng.t_output), text=lng.lab_output3_txt, font=titlefont).place(x=20, y=326)
 
-###### Frame1 da Tab SAÍDA
-fr_output1 = ctk.CTkFrame(tab_main.tab(lng.t_output), width=1135, height=100, fg_color=colors['frame_c'])
-## Radial Buttons do Frame1
+# Frame1 da Tab SAÍDA
+fr_output1 = ctk.CTkFrame(tab_main.tab(lng.t_output),
+                          width=1135, height=100, fg_color=colors['frame_c'])
+# Radial Buttons do Frame1
 if output_path == '':
     radiovar = ctk.IntVar(value=1)
 else:
@@ -1582,7 +1547,7 @@ rad_output2 = ctk.CTkRadioButton(fr_output1, text=lng.rad_output2_txt, font=subt
                                  hover_color='indianred1', border_color=colors['scrollbar_c'],
                                  variable=radiovar, value=0, command=radio_event)
 rad_output2.place(x=20, y=48)
-## Entrada de Texto do Frame1
+# Entrada de Texto do Frame1
 if output_path != '':
     entrytext = ctk.StringVar(value=output_path)
 else:
@@ -1590,20 +1555,21 @@ else:
 entry_output = ctk.CTkEntry(fr_output1, width=700, text_color=colors['text_c'], textvariable=entrytext,
                             state=ctk.DISABLED, fg_color=colors['button_c'])
 entry_output.place(x=120, y=48)
-## Botão de Load Path do Frame1
+# Botão de Load Path do Frame1
 bt_output = ctk.CTkButton(fr_output1, text="", width=50, fg_color=colors['button_c'], hover_color='crimson',
                           image=img_folder, command=load_output_path)
 bt_output.place(x=830, y=48)
-## Posicionamento do Frame1
+# Posicionamento do Frame1
 fr_output1.place(x=85, y=48)
-###### Fim do Frame1
+# Fim do Frame1
 
-###### Frame 2 da Tab SAÍDA
-fr_output2 = ctk.CTkFrame(tab_main.tab(lng.t_output), width=1135, height=100, fg_color=colors['frame_c'])
-## Option Button do Frame2
+# Frame 2 da Tab SAÍDA
+fr_output2 = ctk.CTkFrame(tab_main.tab(lng.t_output),
+                          width=1135, height=100, fg_color=colors['frame_c'])
+# Option Button do Frame2
 conv_options = ['JPG - .jpg, .jpeg, .jfif', 'PNG - .png', 'GIF - .gif',
                 'BMP - .bmp', 'WEBP - .webp', 'ICO - .ico', 'TIFF - .tiff',
-                'JPEG2000 - .pj2', 'PDF - .pdf', 'EPS - .eps'] # 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+                'JPEG2000 - .pj2', 'PDF - .pdf', 'EPS - .eps']  # 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 var_options1 = ctk.StringVar(value=conv_options[init_conv_opt])
 opt_output1 = ctk.CTkOptionMenu(fr_output2, variable=var_options1,
                                 values=conv_options, width=350,
@@ -1612,18 +1578,21 @@ opt_output1 = ctk.CTkOptionMenu(fr_output2, variable=var_options1,
                                 text_color=colors['text_c'], command=set_output_format)
 opt_output1.place(x=20, y=10)
 opt_output1.set(var_options1.get())
-## Posicionamento do Frame
+# Posicionamento do Frame
 fr_output2.place(x=85, y=206)
-###### Fim do Frame2
+# Fim do Frame2
 
-###### Frame 3 da Tab SAÍDA
-fr_output3 = ctk.CTkFrame(tab_main.tab(lng.t_output), width=1135, height=280, fg_color=colors['frame_c'])
-## Labels do Frame3
-lab_output4 = ctk.CTkLabel(fr_output3, text=lng.lab_output4_txt, font=subtitlefont)
+# Frame 3 da Tab SAÍDA
+fr_output3 = ctk.CTkFrame(tab_main.tab(lng.t_output),
+                          width=1135, height=280, fg_color=colors['frame_c'])
+# Labels do Frame3
+lab_output4 = ctk.CTkLabel(
+    fr_output3, text=lng.lab_output4_txt, font=subtitlefont)
 lab_output4.place(x=20, y=10)
-lab_output5 = ctk.CTkLabel(fr_output3, text=lng.lab_output5_txt, font=subtitlefont)
+lab_output5 = ctk.CTkLabel(
+    fr_output3, text=lng.lab_output5_txt, font=subtitlefont)
 lab_output5.place(x=20, y=84)
-## Option Button do Frame3
+# Option Button do Frame3
 var_options2 = ctk.StringVar(value=lng.opt_output2_txt[init_rep_opt])
 opt_output2 = ctk.CTkOptionMenu(fr_output3, variable=var_options2,
                                 values=lng.opt_output2_txt, width=175,
@@ -1632,7 +1601,7 @@ opt_output2 = ctk.CTkOptionMenu(fr_output3, variable=var_options2,
                                 text_color=colors['text_c'], command=set_alreadyexistent_file)
 opt_output2.set(var_options2.get())
 opt_output2.place(x=290, y=10)
-## Check Box do Frame3
+# Check Box do Frame3
 check1_var = init_chk1
 check2_var = init_chk2
 check3_var = init_chk3
@@ -1667,32 +1636,37 @@ check_output5 = ctk.CTkCheckBox(fr_output3, text=lng.check_output5_txt, checkbox
                                 border_width=3, corner_radius=0, border_color=colors['scrollbar_c'],
                                 variable=check5_var, onvalue=1, offvalue=0)
 check_output5.place(x=40, y=204)
-## Posicionamento do Frame
+# Posicionamento do Frame
 fr_output3.place(x=85, y=364)
-###### Fim do Frame3
+# Fim do Frame3
 
 """
 Conteúdo aba REGISTRO -------------------------------------------------------------------------------------------------------------------------
 """
-lab_log = ctk.CTkLabel(tab_main.tab(lng.t_log), text=lng.lab_log_txt, font=titlefont).place(x=20, y=10)
+lab_log = ctk.CTkLabel(tab_main.tab(lng.t_log),
+                       text=lng.lab_log_txt, font=titlefont).place(x=20, y=10)
 fr_log = ctk.CTkTextbox(tab_main.tab(lng.t_log), width=1135, height=595, fg_color=colors['frame_c'],
-                           scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
-                           font=logfont, text_color=colors['text_c'])
+                        scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
+                        font=logfont, text_color=colors['text_c'])
 fr_log.place(x=85, y=48)
 fr_log.configure(state=ctk.DISABLED)
 
 """
 Conteúdo aba CONFIGURAÇÕES ------------------------------------------------------------------------------------------------------------
 """
-###### Labels Principais da Tab CONFIGURAÇÕES
-lab_config1 = ctk.CTkLabel(tab_main.tab(lng.t_settings), text=lng.lab_config1_txt, font=titlefont).place(x=20, y=10)
-lab_config2 = ctk.CTkLabel(tab_main.tab(lng.t_settings), text=lng.lab_config2_txt, font=titlefont).place(x=20, y=118)
+# Labels Principais da Tab CONFIGURAÇÕES
+lab_config1 = ctk.CTkLabel(tab_main.tab(
+    lng.t_settings), text=lng.lab_config1_txt, font=titlefont).place(x=20, y=10)
+lab_config2 = ctk.CTkLabel(tab_main.tab(
+    lng.t_settings), text=lng.lab_config2_txt, font=titlefont).place(x=20, y=118)
 
-###### Frame1 da Tab CONFIGURAÇÕES
-fr_config1 = ctk.CTkFrame(tab_main.tab(lng.t_settings), width=625, height=50, fg_color=colors['frame_c'])
-## Option Button do Frame1
+# Frame1 da Tab CONFIGURAÇÕES
+fr_config1 = ctk.CTkFrame(tab_main.tab(lng.t_settings),
+                          width=625, height=50, fg_color=colors['frame_c'])
+# Option Button do Frame1
 opt_output3 = ctk.CTkOptionMenu(fr_config1,
-                                values=['[PT-BR] Português Brasileiro', '[ENG] English', '[ESP] Español'],
+                                values=['[PT-BR] Português Brasileiro',
+                                        '[ENG] English', '[ESP] Español'],
                                 fg_color=colors['button_c'], button_color=colors['button_c'], button_hover_color='crimson',
                                 dropdown_fg_color=colors['button_c'], dropdown_hover_color='crimson', width=585,
                                 text_color=colors['text_c'], command=set_language)
@@ -1703,15 +1677,17 @@ elif data['language'] == 'eng':
     opt_output3.set('[ENG] English')
 elif data['language'] == 'spa':
     opt_output3.set('[ESP] Español')
-## Posicionamento do Frame1
+# Posicionamento do Frame1
 fr_config1.place(x=85, y=48)
-###### Fim do Frame2
+# Fim do Frame2
 
-###### Frame2 da Tab CONFIGURAÇÕES
-fr_config2 = ctk.CTkFrame(tab_main.tab(lng.t_settings), width=625, height=50, fg_color=colors['frame_c'])
-## Option Button do Frame2
+# Frame2 da Tab CONFIGURAÇÕES
+fr_config2 = ctk.CTkFrame(tab_main.tab(lng.t_settings),
+                          width=625, height=50, fg_color=colors['frame_c'])
+# Option Button do Frame2
 opt_output4 = ctk.CTkOptionMenu(fr_config2,
-                                values=lng.opt_output4_txt, fg_color=colors['button_c'], button_color=colors['button_c'],
+                                values=lng.opt_output4_txt, fg_color=colors[
+                                    'button_c'], button_color=colors['button_c'],
                                 button_hover_color='crimson',
                                 dropdown_fg_color=colors['button_c'], dropdown_hover_color='crimson', width=585,
                                 text_color=colors['text_c'], command=set_theme)
@@ -1720,24 +1696,27 @@ if data['theme'] == 'light':
     opt_output4.set(lng.opt_output4_txt[0])
 elif data['theme'] == 'dark':
     opt_output4.set(lng.opt_output4_txt[1])
-## Posicionamento do Frame2
+# Posicionamento do Frame2
 fr_config2.place(x=85, y=156)
-###### Fim do Frame2
+# Fim do Frame2
 
 """
 Conteúdo aba SOBRE -------------------------------------------------------------------------------------------------------------------
 """
 
-fr_about1 = ctk.CTkFrame(tab_main.tab(lng.t_about), width=500, height=300, fg_color=colors['frame_c'])
+fr_about1 = ctk.CTkFrame(tab_main.tab(lng.t_about),
+                         width=500, height=300, fg_color=colors['frame_c'])
 lab_logo1 = ctk.CTkLabel(fr_about1, text="", image=img_logo).place(x=125, y=5)
-lab_logo2 = ctk.CTkLabel(fr_about1, text='Crimson Simple Image Converter', font=titlefont, text_color=colors['text_c'])
+lab_logo2 = ctk.CTkLabel(fr_about1, text='Crimson Simple Image Converter',
+                         font=titlefont, text_color=colors['text_c'])
 lab_logo2.place(x=65, y=265)
 fr_about1.pack(pady=10)
 fr_about2 = ctk.CTkTextbox(tab_main.tab(lng.t_about), width=1135, height=310, fg_color=colors['frame_c'],
                            scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
                            font=subtitlefont, text_color=colors['text_c'])
-fr_about2.insert('0.0', text='Crimson Simple Image Converter version 1.0.0.0 - windows (20/08/2024)\n\n'
-                             + 'Email: alexrocha6839@gmail.com\n\n' + 'Linkedin: linkedin.com/in/alxrochadev\n\n'
+fr_about2.insert('0.0', text='Crimson Simple Image Converter version 1.0.0.0 - windows (20\\08\\2024)\n\n'
+                             + 'Email: alexrocha6839@gmail.com\n\n' +
+                 'Linkedin: linkedin.com\\in\\alxrochadev\n\n'
                              + 'Programming by Alex Rocha (Requiemd)\n\n' + 'Logo by Alex Rocha (Requiemd)\n\n'
                              + 'Icons by Alex Rocha (Requiemd)')
 fr_about2.configure(state=ctk.DISABLED)
