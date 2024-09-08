@@ -550,11 +550,21 @@ def clear_files():
     for widget in fr_entry.winfo_children():
         widget.destroy()
     bulk_load_files()
-    img_info.configure(state=ctk.NORMAL)
-    img_info.delete('0.0', 'end')
+    img_info.destroy()
+    lab_img_preview.destroy()
+    lab_img_preview = ctk.CTkLabel(fr_imgvisu, text=None, width=450, height=320, fg_color=colors['preview_c'], image=None)
+    lab_img_preview.place(x=10, y=10)
+    img_info = ctk.CTkTextbox(fr_imgvisu, width=450, height=245, fg_color=colors['preview_c'],
+                            scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
+                            font=buttonfont, text_color=colors['text_c'], corner_radius=0)
+    img_info.insert('0.0', text=' ')
     img_info.configure(state=ctk.DISABLED)
-    lab_img_preview.configure(image=None)
-    lab_img_preview.image = None
+    img_info.place(x=10, y=340)
+    # img_info.configure(state=ctk.NORMAL)
+    # img_info.delete('0.0', 'end')
+    # img_info.configure(state=ctk.DISABLED)
+    # lab_img_preview.configure(image=None)
+    # lab_img_preview.image = None
     refresh_info_text(f'{len(filenames)} {lng.lab_info_txt}')
     print(f'NEW FILENAMES {filenames}')
 
@@ -1343,13 +1353,17 @@ def set_theme(valor):
     :param valor: str('Escuro') ou str('Claro').
     """
     global colors
+    print(valor)
     if valor == lng.opt_output4_txt[1]:
-        print('CATAPIMBAS')
         ctk.set_appearance_mode('Dark')
+        ctk.AppearanceModeTracker.appearance_mode = 1
         data['theme'] = 'dark'
+        print(f'APP MODE: {ctk.get_appearance_mode}')
     elif valor == lng.opt_output4_txt[0]:
         ctk.set_appearance_mode('Light')
+        ctk.AppearanceModeTracker.appearance_mode = 0
         data['theme'] = 'light'
+        print(f'APP MODE: {ctk.get_appearance_mode}')
 
     set_colors()
 
@@ -1506,7 +1520,7 @@ fr_entry.place(x=20, y=48)
 fr_imgvisu = ctk.CTkFrame(tab_main.tab(lng.t_input),
                           width=470, height=596, fg_color=colors['frame_c'])
 lab_img_preview = ctk.CTkLabel(
-    fr_imgvisu, text=None, width=450, height=320, fg_color=colors['preview_c'])
+    fr_imgvisu, text=None, width=450, height=320, fg_color=colors['preview_c'], image=None)
 lab_img_preview.place(x=10, y=10)
 img_info = ctk.CTkTextbox(fr_imgvisu, width=450, height=245, fg_color=colors['preview_c'],
                           scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
