@@ -177,6 +177,13 @@ The language of the interface can be changed by modifying the data.json file to 
 
 ### Screenshots
 + Here are some screenshots of the application:
+![01](https://github.com/user-attachments/assets/aaac4fd4-2dc7-4ec7-8f99-91d831005a9d)
+![02](https://github.com/user-attachments/assets/65a2720d-7c60-410d-bf40-1c277ad467d2)
+![03](https://github.com/user-attachments/assets/4423cbe7-36b0-4183-a4fa-9bb2faae80fe)
+![04](https://github.com/user-attachments/assets/fc135143-c1e1-4066-a2d2-8f2b12a40169)
+![05](https://github.com/user-attachments/assets/e32ff39f-8790-422f-9194-019d08e34316)
+![input_tab](https://github.com/user-attachments/assets/d55bc7de-8975-4d2a-add5-0daeae2c6684)
+![theme_toggle](https://github.com/user-attachments/assets/ac91f822-a9ae-48da-b33a-c1239e7f4c69)
 
 
 ## Contributing
