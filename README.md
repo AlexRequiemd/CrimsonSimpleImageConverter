@@ -188,7 +188,11 @@ The language of the interface can be changed by modifying the data.json file to 
 
 <img src="https://github.com/user-attachments/assets/e32ff39f-8790-422f-9194-019d08e34316" style="height: 250px; width:427px;"/>
 
+####
+
 <img src="https://github.com/user-attachments/assets/d55bc7de-8975-4d2a-add5-0daeae2c6684" style="height: 216px; width:384px;"/>
+
+####
 
 <img src="https://github.com/user-attachments/assets/ac91f822-a9ae-48da-b33a-c1239e7f4c69" style="height: 216px; width:384px;"/>
 
