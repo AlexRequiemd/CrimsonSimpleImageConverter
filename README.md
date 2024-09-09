@@ -172,7 +172,7 @@ The language of the interface can be changed by modifying the data.json file to 
 ## Demonstration
 ### Check out the demonstration video of the application:
 
-<a href="https://youtu.be/gGpC1T5b-9w?si=u5Ohcwx7SsjfnIbz" target="_blank" rel="noopener noreferrer"> 
+<a href="https://youtu.be/gGpC1T5b-9w?si=u5Ohcwx7SsjfnIbz" onclick="window.open('URL_DO_LINK', '_blank').focus(); return false;"> 
 <img src="https://github.com/user-attachments/assets/497e94d9-79ee-4382-92bd-9c4327c5c784" style="height: 338px; width:603px;"/>
 </a>
 
