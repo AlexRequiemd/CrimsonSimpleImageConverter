@@ -4,14 +4,14 @@ import json
 Aqui serão armazenadas as variáveis que determinarão os textos da UI
 """
 data = json.load(
-    open('CrimsonSimpleImageConverter\\data\\data.json', 'r', encoding='utf-8'))
+    open('.\\data\\data.json', 'r', encoding='utf-8'))
 current_language = data['language']  # pt-br, en, spa
 translate_dict = {}
 
 
 def load_translation(language='eng'):
     print(f'Carregando arquivo de Linguagem...')
-    with open(f'CrimsonSimpleImageConverter\\data\\lang_{language}.json', 'r', encoding='utf-8') as file:
+    with open(f'.\\data\\lang_{language}.json', 'r', encoding='utf-8') as file:
         return json.load(file)
 
 

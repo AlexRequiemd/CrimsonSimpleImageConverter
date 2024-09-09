@@ -19,10 +19,10 @@ from pygame import mixer
 from time import sleep
 
 data = json.load(
-    open('CrimsonSimpleImageConverter\\data\\data.json', 'r', encoding='utf-8'))
+    open('.\\data\\data.json', 'r', encoding='utf-8'))
 mixer.init()
-beep = mixer.Sound('CrimsonSimpleImageConverter\\assets\\beep.wav')
-qstn = mixer.Sound('CrimsonSimpleImageConverter\\assets\\question.aiff')
+beep = mixer.Sound('.\\assets\\beep.wav')
+qstn = mixer.Sound('.\\assets\\question.aiff')
 
 """
 ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ Declarando a janela principal --------------------------------------------------
 """
 
 j_main = ctk.CTk()  # Cria a janela principal
-j_main.iconbitmap('CrimsonSimpleImageConverter\\icon.ico')
+j_main.iconbitmap('.\\icon.ico')
 j_main.geometry('1280x720')  # tamanho da janela em px
 # determina se é redimensionável ou não
 j_main.resizable(width=False, height=False)
@@ -102,7 +102,7 @@ def save_config():
         case 1:
             data['finish_close'] = 1
 
-    with open('CrimsonSimpleImageConverter\\data\\data.json', 'w', encoding='utf-8') as file:
+    with open('.\\data\\data.json', 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
     print('CONFIGURAÇÕES SALVAS! ________________________')
 
@@ -126,7 +126,7 @@ def set_language(value=''):
     res_bg = ctk.CTkFrame(j_main, fg_color=None,
                           corner_radius=0, width=1280, height=720)
     res_bg.place(x=0, y=0)
-    restart = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0, width=640, height=270, border_width=3,
+    restart = ctk.CTkFrame(j_main, fg_color=colors['warn_c'], corner_radius=0, width=640, height=270, border_width=3,
                            border_color='crimson')
     res_lab = ctk.CTkLabel(restart, text=lng.res_lab_txt, width=600, height=28, text_color=colors['text_c'],
                            font=subtitlefont)
@@ -476,10 +476,10 @@ def bulk_load_files():
                 img_name = f'{inputname}'
 
                 orimg1 = Image.open(
-                    'CrimsonSimpleImageConverter\\assets\\pdf_icon.png')
+                    '.\\assets\\pdf_icon.png')
                 orimg1.filename = img_name
                 orimg1.thumbnail(icon_size)
-                # orimg2 = Image.open('CrimsonSimpleImageConverter\\assets\\pdf_icon.png')
+                # orimg2 = Image.open('.\\assets\\pdf_icon.png')
                 # orimg2.filename = img_name
                 # orimg2.thumbnail(view_size)
             else:
@@ -510,7 +510,7 @@ def bulk_load_files():
         print(filepath)
         if filepath.endswith('.pdf'):
             _i_filepath = filepath
-            _filepath = 'CrimsonSimpleImageConverter\\assets\\pdf_icon.png'
+            _filepath = '.\\assets\\pdf_icon.png'
             print('=' * 15, f'{_filepath}')
             button = ctk.CTkButton(fr_entry, image=added_images[filepath], text=None, width=102, height=102,
                                    border_width=None, corner_radius=0, fg_color='crimson', hover_color='indianred1',
@@ -624,6 +624,8 @@ def set_output_format(value=''):
     :param value: Opção selecionada no opt_output1.
     '''
     global form
+    global opt_output1
+    value = opt_output1.get()
 
     if value == 'JPG - .jpg, .jpeg, .jfif':
         form = forms[0]  # '.jpg'
@@ -678,15 +680,15 @@ def contains_prohibited_chars(filename):
     valor 'True' ou 'False'.
 
     Caracteres Proibidos no Windows:
-        [\\\:*?"<>|]
+        [\\/:*?"<>|]
     Caracteres Proibidos no Linux:
-        [\\\]
+        [\\/]
     :param filename:
     :return:
     '''
     # Definindo os caracteres proibidos em diferentes sistemas operacionais
-    prohibited_chars = r'[\\\:*?"<>|]'  # Proibidos no Windows
-    prohibited_unix_mac = r'[\\\]'      # Proibidos no Unix\\Linux e macOS
+    prohibited_chars = '[\\/:*?"<>|]'  # Proibidos no Windows
+    prohibited_unix_mac = '[\\/]'      # Proibidos no Unix/Linux e macOS
 
     # Verificando se há caracteres proibidos na string
     if re.search(prohibited_chars, filename) or re.search(prohibited_unix_mac, filename):
@@ -753,7 +755,7 @@ def ask_replace_file_on_save(image, output, orig_name):
         dlg_bg = ctk.CTkFrame(j_main, fg_color=None,
                               corner_radius=0, width=1280, height=720)
         dlg_bg.place(x=0, y=0)
-        dialog = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0,
+        dialog = ctk.CTkFrame(j_main, fg_color=colors['warn_c'], corner_radius=0,
                               width=640, height=270, border_width=3, border_color='crimson')
         dlg_lab = ctk.CTkLabel(dialog, text=lng.dlg_lab_txt, width=600,
                                height=28, text_color=colors['text_c'], font=subtitlefont)
@@ -778,7 +780,7 @@ def ask_replace_file_on_save(image, output, orig_name):
     def rename_action():
         def print_name():
             n_name = ren_entry.get()
-            if n_name == '':
+            if n_name == '' or n_name == "\\":
                 print('Escreva um nome válido!')
                 ren_warning.place(x=20, y=68)
                 pass
@@ -795,7 +797,7 @@ def ask_replace_file_on_save(image, output, orig_name):
         ren_bg = ctk.CTkFrame(j_main, fg_color=None,
                               corner_radius=0, width=1280, height=720)
         ren_bg.place(x=0, y=0)
-        rename = ctk.CTkFrame(j_main, fg_color=colors['frame_c'], corner_radius=0,
+        rename = ctk.CTkFrame(j_main, fg_color=colors['warn_c'], corner_radius=0,
                               width=640, height=270, border_width=3, border_color='crimson')
         ren_lab = ctk.CTkLabel(rename, text=lng.ren_lab_txt, width=600,
                                height=28, text_color=colors['text_c'], font=titlefont)
@@ -1289,7 +1291,7 @@ def set_colors():
     Implementa as novas cores nos assets.
     """
     colors['text_c'] = themeset('black', 'white')
-    colors['frame_c'] = themeset('gray91', 'gray20')
+    colors['frame_c'] = themeset('gray89', 'gray20')
     colors['button_c'] = themeset('gray100', 'gray30')
     colors['buttonunselect_c'] = themeset('gray75', 'gray40')
     colors['buttonhoverunselect_c'] = themeset('gray91', 'gray60')
@@ -1297,6 +1299,7 @@ def set_colors():
     colors['buttondisable_c'] = themeset('gray75', 'gray15')
     colors['textdisable_c'] = themeset('gray20', 'gray40')
     colors['preview_c'] = themeset('gray85', 'gray30')
+    colors['warn_c'] = themeset('gray85', 'gray20')
 
     fr_output1.configure(fg_color=colors['frame_c'])
     fr_output2.configure(fg_color=colors['frame_c'])
@@ -1448,24 +1451,24 @@ Assets -------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------
 """
 
-img_folder = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\folder_icon_dark.png'),
-                          dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\folder_icon.png'), size=(24, 20))
-img_folderplus = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\folderplus_icon_dark.png'),
-                              dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\folderplus_icon.png'), size=(24, 20))
-img_clean = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\clean_icon_dark.png'),
-                         dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\clean_icon.png'), size=(28, 20))
-img_convert = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\convert_icon_dark.png'),
-                           dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\convert_icon.png'), size=(22, 20))
-img_close = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\close_icon_dark.png'),
-                         dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\close_icon.png'), size=(22, 20))
-img_logo = ctk.CTkImage(light_image=Image.open('CrimsonSimpleImageConverter\\assets\\logo.png'),
-                        dark_image=Image.open('CrimsonSimpleImageConverter\\assets\\logo.png'), size=(250, 250))
+img_folder = ctk.CTkImage(light_image=Image.open('.\\assets\\folder_icon_dark.png'),
+                          dark_image=Image.open('.\\assets\\folder_icon.png'), size=(24, 20))
+img_folderplus = ctk.CTkImage(light_image=Image.open('.\\assets\\folderplus_icon_dark.png'),
+                              dark_image=Image.open('.\\assets\\folderplus_icon.png'), size=(24, 20))
+img_clean = ctk.CTkImage(light_image=Image.open('.\\assets\\clean_icon_dark.png'),
+                         dark_image=Image.open('.\\assets\\clean_icon.png'), size=(28, 20))
+img_convert = ctk.CTkImage(light_image=Image.open('.\\assets\\convert_icon_dark.png'),
+                           dark_image=Image.open('.\\assets\\convert_icon.png'), size=(22, 20))
+img_close = ctk.CTkImage(light_image=Image.open('.\\assets\\close_icon_dark.png'),
+                         dark_image=Image.open('.\\assets\\close_icon.png'), size=(22, 20))
+img_logo = ctk.CTkImage(light_image=Image.open('.\\assets\\logo.png'),
+                        dark_image=Image.open('.\\assets\\logo.png'), size=(250, 250))
 img_previewbg = ctk.CTkImage(light_image=Image.open(
-    'CrimsonSimpleImageConverter\\assets\\preview_bg.png'), size=(450, 320))
-colors = {'text_c': themeset('black', 'white'), 'frame_c': themeset('gray91', 'gray20'), 'button_c': themeset('gray100', 'gray30'),
+    '.\\assets\\preview_bg.png'), size=(450, 320))
+colors = {'text_c': themeset('black', 'white'), 'frame_c': themeset('gray89', 'gray20'), 'button_c': themeset('gray100', 'gray30'),
           'buttonunselect_c': themeset('gray75', 'gray40'), 'buttonhoverunselect_c': themeset('gray91', 'gray60'),
           'scrollbar_c': themeset('gray75', 'gray30'), 'buttondisable_c': themeset('gray75', 'gray15'),
-          'textdisable_c': themeset('gray45', 'gray40'), 'preview_c': themeset('gray85', 'gray30')}
+          'textdisable_c': themeset('gray45', 'gray40'), 'preview_c': themeset('gray85', 'gray30'), 'warn_c': themeset('gray85', 'gray20')}
 
 titlefont = ctk.CTkFont(family='Arial', size=24, weight='bold')
 subtitlefont = ctk.CTkFont(family='Arial', size=16, weight='bold')
@@ -1732,11 +1735,11 @@ fr_about1.pack(pady=10)
 fr_about2 = ctk.CTkTextbox(tab_main.tab(lng.t_about), width=1135, height=310, fg_color=colors['frame_c'],
                            scrollbar_button_color=colors['scrollbar_c'], scrollbar_button_hover_color='crimson',
                            font=subtitlefont, text_color=colors['text_c'])
-fr_about2.insert('0.0', text='Crimson Simple Image Converter version 1.0.0.0 - windows (20\\08\\2024)\n\n'
+fr_about2.insert('0.0', text='Crimson Simple Image Converter version 1.0.3 - windows (09\\09\\2024)\n\n'
                              + 'Email: alexrocha6839@gmail.com\n\n' +
                  'Linkedin: linkedin.com\\in\\alxrochadev\n\n'
-                             + 'Programming by Alex Rocha (Requiemd)\n\n' + 'Logo by Alex Rocha (Requiemd)\n\n'
-                             + 'Icons by Alex Rocha (Requiemd)')
+                             + 'Programming by Alex S. A. Rocha (Requiemd)\n\n' + 'Logo by Alex S. A. Rocha (Requiemd)\n\n'
+                             + 'Icons by Alex S. A. Rocha (Requiemd)')
 fr_about2.configure(state=ctk.DISABLED)
 fr_about2.pack(pady=10)
 
@@ -1752,5 +1755,6 @@ print(f'{output_path}')
 set_output_format()
 set_alreadyexistent_file()
 radio_event()
+print(f'FORMATO ATUAL: {form}')
 j_main.protocol("WM_DELETE_WINDOW", close_app)
 j_main.mainloop()

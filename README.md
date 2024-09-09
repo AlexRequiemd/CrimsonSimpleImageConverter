@@ -81,7 +81,7 @@
 + **JSON:** A lightweight data exchange format; the json module converts between Python objects and JSON strings.
 
 ```bash
-pip install pillow customtkinter pikepdf
+pip install -r requirements.txt
 ```
 
 ## Installer
